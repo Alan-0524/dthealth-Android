@@ -1,4 +1,4 @@
-package com.dthealth;
+package com.dthealth.view.ui;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dthealth.R;
+import com.dthealth.service.model.PhysicalIndex;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -19,14 +21,13 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -44,6 +45,13 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
     private String urlAddress = "";
     private String line;
     private Thread thread;
+    private Gson gson = new Gson();
+    private PhysicalIndex physicalIndex;
+    private LineData lineData;
+    private ILineDataSet set0;
+    private ILineDataSet set1;
+    private ILineDataSet set2;
+    private ILineDataSet set3;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -68,8 +76,6 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart_current);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         chart = (LineChart) findViewById(R.id.chart_current);
         chart.invalidate(); // refresh
         chart.setOnChartValueSelectedListener(this);
@@ -86,11 +92,19 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
         // set an alternative background color
         chart.setBackgroundColor(Color.LTGRAY);
 
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
-
+        LineData data0 = new LineData();
+        data0.setValueTextColor(Color.WHITE);
+        LineData data1 = new LineData();
+        data1.setValueTextColor(Color.WHITE);
+        LineData data2 = new LineData();
+        data2.setValueTextColor(Color.WHITE);
+        LineData data3 = new LineData();
+        data3.setValueTextColor(Color.WHITE);
         // add empty data
-        chart.setData(data);
+        chart.setData(data0);
+        chart.setData(data1);
+        chart.setData(data2);
+        chart.setData(data3);
 
         // get the legend (only possible after setting data)
         Legend legend = chart.getLegend();
@@ -100,18 +114,35 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
         legend.setTypeface(tfLight);
         legend.setTextColor(Color.BLUE);
 
+
         XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
         xAxis.setTypeface(tfLight);
         xAxis.setTextColor(Color.BLUE);
         xAxis.setDrawGridLines(false);
         xAxis.setAvoidFirstLastClipping(true);
         xAxis.setEnabled(true);
+//        xAxis.setGranularity(1f);
+//        xAxis.setValueFormatter(new ValueFormatter() {
+//
+//            private final SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
+//
+//            @Override
+//            public String getFormattedValue(float value) {
+////                Log.i("value-----------",String.valueOf(value));
+////                long millis = TimeUnit.SECONDS.toMillis((long)value);
+//                long millis = (long) value*100000000;
+//                Log.i("value-----------",String.valueOf(millis));
+//                return mFormat.format(new Date(millis));
+//            }
+//        });
+
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setTypeface(tfLight);
         leftAxis.setTextColor(Color.BLUE);
-        leftAxis.setAxisMaximum(70f);
-        leftAxis.setAxisMinimum(50f);
+        leftAxis.setAxisMaximum(150);
+        leftAxis.setAxisMinimum(0f);
         leftAxis.setDrawGridLines(true);
 
         YAxis rightAxis = chart.getAxisRight();
@@ -125,93 +156,92 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
     }
 
     private String initConnection(int type) {
-        String url = "http://192.168.1.74:8082/currentState/long.an.0524@gmail.com/";
+        String url = "http://172.28.105.58:8082/currentState/";
         switch (type) {
             case 0:
-                url = url + "heartbeat";
+                url = url + "loadingCurrentHeartbeat/5d53b73492f6e331bc118715";
                 break;
             case 1:
-                url = url + "bloodPressure";
-                break;
-            case 2:
-                url = url + "bloodFat";
-                break;
-            case 3:
-                url = url + "glucose";
-                break;
-            case 4:
-                url = url + "temperature";
+                url = url + "loadingCurrentIndex/5d53b73492f6e331bc118715";
                 break;
         }
-        return url + "/100";
+        return url;
     }
 
-//    private void feedMultiple() {
-//        if (thread != null) thread.interrupt();
-//        thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    // Don't generate garbage runnables inside the loop.
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            addEntry();
-//                        }
-//                    });
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//        thread.start();
-//    }
 
     private void addEntry(String value) {
-        LineData data = chart.getData();
-        if (data != null) {
-            ILineDataSet set = data.getDataSetByIndex(0);
-            // set.addEntry(...); // can be called as well
+        if(!value.equals("") && value.startsWith("data:")){
+            value = value.replace("data:", "");
+            physicalIndex = readMessage(value);
+            lineData= chart.getData();
+            if (lineData != null) {
+                if (type == 0) {
+                    set0 = lineData.getDataSetByIndex(0);
+                    // set.addEntry(...); // can be called as well
+                    if (set0 == null) {
+                        set0 = createSet("Heartbeat",Color.RED);
+                        lineData.addDataSet(set0);
+                    }
+                    lineData.addEntry(new Entry(set0.getEntryCount(), physicalIndex.getHeartbeatStrength()), 0);
+                } else {
+                    set0 = lineData.getDataSetByIndex(0);
+                    set1 = lineData.getDataSetByIndex(1);
+                    set2 = lineData.getDataSetByIndex(2);
+                    set3 = lineData.getDataSetByIndex(3);
+                    // set.addEntry(...); // can be called as well
+                    if (set0 == null) {
+                        set0 = createSet("Blood Pressure",Color.RED);
+                        lineData.addDataSet(set0);
+                    }
+                    if (set1 == null) {
+                        set1 = createSet("Blood Glucose",Color.GREEN);
+                        lineData.addDataSet(set1);
+                    }
+                    if (set2 == null) {
+                        set2 = createSet("Blood Fat",Color.BLACK);
+                        lineData.addDataSet(set2);
+                    }
+                    if (set3 == null) {
+                        set3 = createSet("Temperature",Color.MAGENTA);
+                        lineData.addDataSet(set3);
+                    }
 
-            if (set == null) {
-                set = createSet();
-                data.addDataSet(set);
+                    lineData.addEntry(new Entry(set0.getEntryCount(), physicalIndex.getBloodPressure()), 0);
+                    lineData.addEntry(new Entry(set1.getEntryCount(), physicalIndex.getBloodGlucose()), 1);
+                    lineData.addEntry(new Entry(set2.getEntryCount(), physicalIndex.getBloodFat()), 2);
+                    lineData.addEntry(new Entry(set3.getEntryCount(), physicalIndex.getTemperature()), 3);
+                }
+                lineData.notifyDataChanged();
+                // let the chart know it's data has changed
+                chart.notifyDataSetChanged();
+
+                // limit the number of visible entries
+                chart.setVisibleXRangeMaximum(20);
+                // chart.setVisibleYRange(30, AxisDependency.LEFT);
+
+                // move to the latest entry
+                chart.moveViewToX(lineData.getEntryCount());
+                // this automatically refreshes the chart (calls invalidate())
+                // chart.moveViewTo(data.getXValCount()-7, 55f,
+                // AxisDependency.LEFT);
             }
-            data.addEntry(new Entry(set.getEntryCount(), Float.valueOf(value)), 0);
-            data.notifyDataChanged();
-
-            // let the chart know it's data has changed
-            chart.notifyDataSetChanged();
-
-            // limit the number of visible entries
-            chart.setVisibleXRangeMaximum(20);
-            // chart.setVisibleYRange(30, AxisDependency.LEFT);
-
-            // move to the latest entry
-            chart.moveViewToX(data.getEntryCount());
-
-            // this automatically refreshes the chart (calls invalidate())
-            // chart.moveViewTo(data.getXValCount()-7, 55f,
-            // AxisDependency.LEFT);
         }
     }
 
-    private LineDataSet createSet() {
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
+    private LineDataSet createSet(String type,int color) {
+        LineDataSet set = new LineDataSet(null, type);
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColor(ColorTemplate.getHoloBlue());
-        set.setCircleColor(Color.WHITE);
+        set.setColor(color);
+        set.setCircleColor(color);
         set.setLineWidth(2f);
         set.setCircleRadius(4f);
         set.setFillAlpha(65);
-        set.setFillColor(ColorTemplate.getHoloBlue());
+        set.setFillColor(color);
         set.setHighLightColor(Color.rgb(244, 117, 117));
-        set.setValueTextColor(Color.WHITE);
+        set.setValueTextColor(color);
         set.setValueTextSize(9f);
         set.setDrawValues(false);
+
         return set;
     }
 
@@ -230,21 +260,20 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
                     connection.setRequestProperty("token", token);
                     InputStream in = connection.getInputStream();
                     reader = new BufferedReader(new InputStreamReader(in));
+                    line = reader.readLine();
                     while ((line = reader.readLine()) != null) {
                         // Don't generate garbage runnable inside the loop.
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (null != line && !"".equals(line)) {
-                                    addEntry(line.split(":")[1]);
-                                }
-                            }
-                        });
-                        if (Thread.currentThread().isInterrupted()) {
+                        if (thread.isInterrupted()) {
                             reader.close();
                             connection.disconnect();
                             break;
                         }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                addEntry(line);
+                            }
+                        });
                     }
                 } catch (MalformedURLException e) {
                     Log.e("MalformedURLException", Objects.requireNonNull(e.getMessage()));
@@ -252,7 +281,7 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
                     Log.e("ProtocolException", Objects.requireNonNull(e.getMessage()));
                 } catch (IOException e) {
                     Log.e("IOException", Objects.requireNonNull(e.getMessage()));
-                } finally {
+                }finally {
                     closeThread();
                 }
             }
@@ -260,14 +289,18 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
         thread.start();
     }
 
+    public PhysicalIndex readMessage(String data) {
+        return gson.fromJson(data, PhysicalIndex.class);
+    }
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        Log.i("Entry selected", e.toString());
+
     }
 
     @Override
     public void onNothingSelected() {
-        Log.i("Nothing selected", "Nothing selected.");
+
     }
 
     @Override
@@ -277,7 +310,9 @@ public class ChartCurrentActivity extends AppCompatActivity implements OnChartVa
 
     private void closeThread() {
         if (thread != null) {
-            thread.interrupt();
+            if (!thread.isInterrupted()) {
+                thread.interrupt();
+            }
         }
     }
 

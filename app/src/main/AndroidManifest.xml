@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.dthealth">
 
-    <dist:module dist:instant="true" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,18 +13,35 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ChartCurrentActivity"
-            android:label="@string/title_activity_chart_current"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".view.ui.CurrentStatusActivity"
+            android:label="@string/title_activity_current_status"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:name=".view.ui.LoginActivity"
+            android:label="@string/title_activity_login">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MainActivity" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.ui.UserActivity"
+            android:label="user list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.ui.ChartCurrentActivity"
+            android:label="@string/title_activity_chart_current"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.ui.MainActivity"
+            android:label="@string/app_name" />
     </application>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <dist:module dist:instant="true" />
 
 </manifest>

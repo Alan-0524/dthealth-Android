@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.dthealth.MainActivity">
+    tools:context="com.dthealth.view.ui.MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -14,7 +14,7 @@
         android:background="@color/cardview_shadow_start_color"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,36 +24,16 @@
             android:id="@+id/load_heartbeat"
             android:layout_width="fill_parent"
             android:layout_height="95dp"
-            android:text="load my current heartbeat"
+            android:text="load current heartbeat"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/load_bloodPressure"
             android:layout_width="fill_parent"
             android:layout_height="95dp"
-            android:text="load my current blood pressure"
+            android:text="load current health indexes"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/load_bloodFat"
-            android:layout_width="fill_parent"
-            android:layout_height="95dp"
-            android:text="load my current blood fat"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/load_glucose"
-            android:layout_width="fill_parent"
-            android:layout_height="95dp"
-            android:text="load my current glucose"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/load_temperature"
-            android:layout_width="fill_parent"
-            android:layout_height="95dp"
-            android:text="load my current temperature"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
