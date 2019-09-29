@@ -3,10 +3,10 @@ package com.dthealth.util;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import com.dthealth.service.model.DetectResult;
-import com.dthealth.service.model.DetectResultItem;
-import com.dthealth.service.model.DigitalUserModel;
-import com.dthealth.service.model.PhysicalIndex;
+import com.dthealth.model.DetectResult;
+import com.dthealth.model.DetectResultItem;
+import com.dthealth.model.DigitalUserModel;
+import com.dthealth.model.PhysicalIndex;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +24,7 @@ public class PhysicalIndexListener {
     private static DetectResultItem detectResultItem = null;
     @SuppressLint("SimpleDateFormat")
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private HeartbeatCalculator heartbeatCalculator = new HeartbeatCalculator();
+
 
     public static synchronized PhysicalIndexListener getInstance() {
         if (physicalIndexListener == null) {
@@ -47,10 +47,10 @@ public class PhysicalIndexListener {
                     list.add(detectResultItem);
                 }
             }
-            detectResultItem = catchAbnormalStatus("Heartbeat", heartbeatCalculator.calculate());
-            if (detectResultItem != null) {
-                list.add(detectResultItem);
-            }
+//            detectResultItem = catchAbnormalStatus("Heartbeat", heartbeatCalculator.calculate());
+//            if (detectResultItem != null) {
+//                list.add(detectResultItem);
+//            }
             return new DetectResult("5d53b73492f6e331bc118715", getCurrentTime(), list);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             Log.e("detectAbnormalStatus", e.getMessage());

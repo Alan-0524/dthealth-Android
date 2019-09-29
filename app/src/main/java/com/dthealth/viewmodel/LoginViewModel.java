@@ -7,12 +7,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.dthealth.R;
-import com.dthealth.service.dataSource.LoginDataSource;
-import com.dthealth.service.model.LoginFormState;
-import com.dthealth.service.model.LoginResult;
-import com.dthealth.service.model.Result;
-import com.dthealth.service.model.User;
-import com.dthealth.service.repository.LoginRepository;
+import com.dthealth.dao.entity.LoggedInUser;
+import com.dthealth.dao.entity.User;
+import com.dthealth.dataSource.LoginDataSource;
+import com.dthealth.model.LoginFormState;
+import com.dthealth.model.LoginResult;
+import com.dthealth.model.Result;
+import com.dthealth.repository.LoginRepository;
+import com.dthealth.util.RoomDbClient;
 
 public class LoginViewModel extends ViewModel {
 
@@ -41,7 +43,7 @@ public class LoginViewModel extends ViewModel {
         Result<User> result = LoginRepository.getLoginResult();
         if (result instanceof Result.Success) {
             User user = ((Result.Success<User>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(user.getFullName(),user.getId())));
+            loginResult.setValue(new LoginResult(new LoggedInUser(user)));
         } else {
             loginResult.setValue(new LoginResult(R.string.login_failed));
         }

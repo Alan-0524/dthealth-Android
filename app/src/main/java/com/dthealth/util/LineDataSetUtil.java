@@ -1,21 +1,11 @@
 package com.dthealth.util;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 
-import com.dthealth.view.ui.CurrentStatusActivity;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 public class LineDataSetUtil{
     private static LineDataSetUtil instance;
@@ -70,8 +60,8 @@ public class LineDataSetUtil{
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setColor(color);
         set.setCircleColor(color);
-        set.setLineWidth(2f);
-        set.setCircleRadius(4f);
+        set.setLineWidth(3f);
+        //set.setCircleRadius(4f);
         set.setFillAlpha(65);
         set.setFillColor(color);
         set.setHighLightColor(Color.rgb(244, 117, 117));

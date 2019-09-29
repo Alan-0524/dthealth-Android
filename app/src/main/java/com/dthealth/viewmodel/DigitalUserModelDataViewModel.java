@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.dthealth.service.model.DigitalUserModel;
-import com.dthealth.service.repository.DigitalUserModelDataRepository;
+import com.dthealth.model.DigitalUserModel;
+import com.dthealth.repository.DigitalUserModelDataRepository;
 
 public class DigitalUserModelDataViewModel extends ViewModel {
     private MutableLiveData<DigitalUserModel> modelMutableLiveData = new MutableLiveData<>();
